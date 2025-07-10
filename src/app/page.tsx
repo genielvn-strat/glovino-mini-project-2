@@ -6,7 +6,7 @@ export default async function Home() {
     const blogs = (await getBlogs()).reverse();
 
     return (
-        <div>
+        <div className="pb-32">
             <AddBlogPost />
             <BlogPostCardList blogPosts={blogs} />
         </div>

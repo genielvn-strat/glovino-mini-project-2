@@ -6,6 +6,12 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import ReactMde from "react-mde";
 import "react-mde/lib/styles/css/react-mde-all.css";
+import {
+    headerOneCommand,
+    headerThreeCommand,
+    headerTwoCommand,
+    imageCommand,
+} from "@/lib/reactmde";
 
 interface AddBlogPostFormProps {
     show: Dispatch<React.SetStateAction<boolean>>;
@@ -19,7 +25,6 @@ const AddBlogPostForm: React.FC<AddBlogPostFormProps> = ({ show }) => {
     const [author, setAuthor] = useState<string>("");
     const [summary, setSummary] = useState<string>("");
     const [content, setContent] = useState<string>("");
-    
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -96,14 +101,21 @@ const AddBlogPostForm: React.FC<AddBlogPostFormProps> = ({ show }) => {
                             onChange={setContent}
                             disablePreview
                             toolbarCommands={[
+                                ["H1", "H2", "H3"],
                                 ["bold", "italic", "strikethrough"],
-                                ["link", "quote", "code"],
+                                ["link", "img", "quote", "code"],
                                 ["unordered-list", "ordered-list"],
                             ]}
                             childProps={{
                                 writeButton: {
                                     tabIndex: -1,
                                 },
+                            }}
+                            commands={{
+                                H1: headerOneCommand,
+                                H2: headerTwoCommand,
+                                H3: headerThreeCommand,
+                                img: imageCommand,
                             }}
                         />
                     </div>

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import NavBar from "@/components/NavBar";
-import Footer from "@/components/Footer";
 
 const noto_sans = Noto_Sans_JP({
     variable: "--font-noto-sans-jp",
@@ -36,7 +35,6 @@ export default function RootLayout({
                     <main className="w-full max-w-[768px] px-4 flex-grow">
                         {children}
                     </main>
-                    <Footer />
                 </div>
             </body>
         </html>

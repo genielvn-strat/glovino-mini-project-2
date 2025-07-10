@@ -1,18 +1,20 @@
-"use client"
+"use client";
 import { IBlogPost } from "@/types/IBlogPost";
 import React, { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import Window from "./Window";
 import { deleteBlogPost } from "@/actions/blogAction";
+import BlogPostEdit from "./BlogPostEdit";
 
 interface BlogPostProps {
     blog: IBlogPost;
     commentsNumber?: number;
+    slug: string;
 }
 
-const BlogPost: React.FC<BlogPostProps> = ({ blog, commentsNumber }) => {
-    const [mode, setMode] = useState<string>("read")
+const BlogPost: React.FC<BlogPostProps> = ({ blog, commentsNumber, slug }) => {
+    const [mode, setMode] = useState<string>("read");
 
     return (
         <div className="flex flex-col gap-2 py-1">
@@ -27,20 +29,34 @@ const BlogPost: React.FC<BlogPostProps> = ({ blog, commentsNumber }) => {
                     {commentsNumber}{" "}
                     {commentsNumber === 1 ? "comment" : "comments"}
                 </p>
-                <p className="text-gray-500 hover:text-gray-900 transition-colors duration-300">
+                <p
+                    className="text-gray-500 hover:text-gray-900 transition-colors duration-300"
+                    onClick={() => {
+                        setMode("edit");
+                    }}
+                >
                     <i className="bi bi-pencil " /> {"Edit"}
                 </p>
-                <p className="text-gray-500 hover:text-red-600 transition-colors duration-300" onClick={
-                    () => {setMode("delete")}
-                }>
+                <p
+                    className="text-gray-500 hover:text-red-600 transition-colors duration-300"
+                    onClick={() => {
+                        setMode("delete");
+                    }}
+                >
                     <i className="bi bi-trash " /> {"Delete"}
                 </p>
             </div>
-            <div className="blog-markdown py-3">
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                    {blog.body}
-                </ReactMarkdown>
-            </div>
+            {mode === "edit" ? (
+                <>
+                    <BlogPostEdit blog={blog} show={setMode} slug={slug} />
+                </>
+            ) : (
+                <div className="blog-markdown py-3">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {blog.body}
+                    </ReactMarkdown>
+                </div>
+            )}
             {mode === "delete" && (
                 <Window
                     confirm={async () => {

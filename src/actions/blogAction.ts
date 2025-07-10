@@ -57,17 +57,31 @@ export const createBlogPost = async (formData: FormData) => {
 };
 
 export const updateBlogPost = async (
+    formData: FormData,
     id: number,
-    title: string,
-    body: string,
     slug: string
 ) => {
+    const title = formData.get("title") as string;
+    const body = formData.get("body") as string;
+    const summary = formData.get("summary") as string;
+
+    if (!title || !body) {
+        return { error: "Title and body are required." };
+    }
+
+    if (!summary) {
+        return { error: "Your blog summary is very important!" };
+    }
+
+    if (title.length > 100) {
+        return { error: "Title must be less than 100 characters." };
+    }
+
     await db
         .update(blogs)
         .set({
             title: title,
             body: body,
-            slug: slug,
             updated_at: new Date(),
         })
         .where(eq(blogs.id, id));
