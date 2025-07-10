@@ -76,5 +76,5 @@ export const updateBlogPost = async (
 
 export const deleteBlogPost = async (id: number) => {
     await db.delete(blogs).where(eq(blogs.id, id));
-    revalidatePath("/");
+    redirect("/");
 };
