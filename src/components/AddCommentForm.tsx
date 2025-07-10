@@ -71,7 +71,6 @@ const AddCommentForm: React.FC<AddCommentFormProps> = ({ show, slug }) => {
                     onClick={(e) => {
                         e.stopPropagation();
                         e.preventDefault();
-                        console.log("Cancel clicked");
                         show(false);
                     }}
                 >

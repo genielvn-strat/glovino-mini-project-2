@@ -20,8 +20,6 @@ export async function generateMetadata({
 
     const blogPost: IBlogPost = await getBlogPost(blog);
 
-    console.log(blogPost);
-
     return {
         title: blogPost.title,
         description: blogPost.summary,
