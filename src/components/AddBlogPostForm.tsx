@@ -19,9 +19,7 @@ const AddBlogPostForm: React.FC<AddBlogPostFormProps> = ({ show }) => {
     const [author, setAuthor] = useState<string>("");
     const [summary, setSummary] = useState<string>("");
     const [content, setContent] = useState<string>("");
-    const [selectedTab, setSelectedTab] = useState<"write" | "preview">(
-        "write"
-    );
+    
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();

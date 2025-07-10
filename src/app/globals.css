@@ -47,6 +47,10 @@
     @apply pl-4 list-decimal
 }
 
+.blog-markdown > code, .blog-markdown > pre > code, .blog-markdown > p > code{
+    @apply font-mono
+}
+
 .blog-markdown > a, .blog-markdown > p > a {
     @apply text-sky-700 underline
 }
