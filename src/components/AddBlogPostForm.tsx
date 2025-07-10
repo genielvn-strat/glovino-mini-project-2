@@ -1,7 +1,11 @@
+"use client";
+
 import { createBlogPost } from "@/actions/blogAction";
 import React, { Dispatch, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import ReactMde from "react-mde";
+import "react-mde/lib/styles/css/react-mde-all.css";
 
 interface AddBlogPostFormProps {
     show: Dispatch<React.SetStateAction<boolean>>;
@@ -15,9 +19,14 @@ const AddBlogPostForm: React.FC<AddBlogPostFormProps> = ({ show }) => {
     const [author, setAuthor] = useState<string>("");
     const [summary, setSummary] = useState<string>("");
     const [content, setContent] = useState<string>("");
+    const [selectedTab, setSelectedTab] = useState<"write" | "preview">(
+        "write"
+    );
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setSubmitting(true);
+        setError(null);
 
         try {
             const formData = new FormData(e.currentTarget);
@@ -73,7 +82,7 @@ const AddBlogPostForm: React.FC<AddBlogPostFormProps> = ({ show }) => {
                         <textarea
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg"
                             rows={3}
-                            placeholder="Write your blog summary here. "
+                            placeholder="Write your blog summary here."
                             name="summary"
                             value={summary}
                             onChange={(e) => setSummary(e.target.value)}
@@ -83,14 +92,22 @@ const AddBlogPostForm: React.FC<AddBlogPostFormProps> = ({ show }) => {
                         <label className="block text-gray-700 mb-2">
                             Content
                         </label>
-                        <textarea
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-                            rows={5}
-                            placeholder="Write your blog post content here. Markdown is supported!"
-                            name="body"
+                        <input type="hidden" name="body" value={content} />
+                        <ReactMde
                             value={content}
-                            onChange={(e) => setContent(e.target.value)}
-                        ></textarea>
+                            onChange={setContent}
+                            disablePreview
+                            toolbarCommands={[
+                                ["bold", "italic", "strikethrough"],
+                                ["link", "quote", "code"],
+                                ["unordered-list", "ordered-list"],
+                            ]}
+                            childProps={{
+                                writeButton: {
+                                    tabIndex: -1,
+                                },
+                            }}
+                        />
                     </div>
                     {error && (
                         <div className="mb-4 text-red-500">
@@ -104,7 +121,7 @@ const AddBlogPostForm: React.FC<AddBlogPostFormProps> = ({ show }) => {
                         <h1 className="text-5xl font-bold">{title}</h1>
                         <p className="text-gray-600 text-2xl">{summary}</p>
                         <p className="text-gray-600 italic">
-                            Written by {author} \\{" "}
+                            Written by {author || "Anonymous"} \\{" "}
                             {new Date().toLocaleDateString()}
                         </p>
                         <div className="py-2 border-2 border-gray-300 border-x-0 text-sm text-gray-800">
@@ -134,7 +151,6 @@ const AddBlogPostForm: React.FC<AddBlogPostFormProps> = ({ show }) => {
                         onClick={(e) => {
                             e.stopPropagation();
                             e.preventDefault();
-                            console.log("Cancel clicked");
                             show(false);
                         }}
                     >
@@ -145,6 +161,7 @@ const AddBlogPostForm: React.FC<AddBlogPostFormProps> = ({ show }) => {
                     onClick={() => {
                         setPreview(!preview);
                     }}
+                    className="cursor-pointer"
                 >
                     {!preview ? (
                         <i className="bi bi-eye-fill text-3xl" />

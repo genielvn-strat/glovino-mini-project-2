@@ -36,6 +36,21 @@
     @apply text-base;
 }
 
+.blog-markdown > blockquote {
+    @apply pl-4 border-l-3 border-gray-700
+}
+
+.blog-markdown > ul {
+    @apply pl-4 list-disc
+}
+.blog-markdown > ol {
+    @apply pl-4 list-decimal
+}
+
+.blog-markdown > a, .blog-markdown > p > a {
+    @apply text-sky-700 underline
+}
+
 .blog-markdown {
     @apply gap-1 flex flex-col;
 }
