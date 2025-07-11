@@ -9,12 +9,6 @@ import { auth } from "@/auth";
 import { Metadata } from "next";
 
 interface BlogPostProps {
-    params: {
-        blog: string;
-    };
-}
-
-interface MetadataProps {
     params: Promise<{
         blog: string;
     }>;
@@ -22,7 +16,7 @@ interface MetadataProps {
 
 export async function generateMetadata({
     params,
-}: MetadataProps): Promise<Metadata> {
+}: BlogPostProps): Promise<Metadata> {
     const blog = await params;
 
     const slug = blog.blog;
