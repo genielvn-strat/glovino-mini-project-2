@@ -6,6 +6,7 @@ import { IBlogPost } from "@/types/IBlogPost";
 import { IComment } from "@/types/IComment";
 import { notFound } from "next/navigation";
 import { auth } from "@/auth";
+import { Metadata } from "next";
 
 interface BlogPostProps {
     params: {
@@ -13,10 +14,20 @@ interface BlogPostProps {
     };
 }
 
-export async function generateMetadata({ params }: BlogPostProps) {
-    const blog = (await params).blog;
+interface MetadataProps {
+    params: Promise<{
+        blog: string;
+    }>;
+}
 
-    const blogPost: IBlogPost = await getBlogPost(blog);
+export async function generateMetadata({
+    params,
+}: MetadataProps): Promise<Metadata> {
+    const blog = await params;
+
+    const slug = blog.blog;
+
+    const blogPost: IBlogPost = await getBlogPost(slug);
 
     return {
         title: blogPost.title,
