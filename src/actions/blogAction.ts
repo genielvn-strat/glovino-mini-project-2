@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 import { blogs } from "@/db/schema";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { auth } from "@/auth";
 
 export const getBlogs = async () => {
     const data = await db.select().from(blogs);
@@ -21,12 +22,23 @@ export const getBlogPost = async (slug: string) => {
 };
 
 export const createBlogPost = async (formData: FormData) => {
+    const session = await auth();
+    if (!session?.user) {
+        return { error: "You are not logged in!" };
+    }
+
+    const author_uid = session?.user.uid;
     let author = formData.get("author") as string;
     const title = formData.get("title") as string;
     const body = formData.get("body") as string;
     const summary = formData.get("summary") as string;
     const slug =
-        title.toLowerCase().replace(/\s+/g, "-").substring(0, 30) +
+        title
+            .toLowerCase()
+            .replace(/[^a-z0-9\-]+/g, "-") // replace all non-alphanumeric-symbols with hyphen
+            .replace(/-+/g, "-") // collapse multiple hyphens
+            .replace(/^-|-$/g, "") // trim leading/trailing hyphens
+            .substring(0, 30) +
         "-" +
         Date.now();
 
@@ -50,6 +62,7 @@ export const createBlogPost = async (formData: FormData) => {
         title: title,
         body: body,
         author: author,
+        author_uid: author_uid,
         summary: summary,
         slug: slug,
     });
@@ -61,6 +74,22 @@ export const updateBlogPost = async (
     id: number,
     slug: string
 ) => {
+    const session = await auth();
+    if (!session?.user) {
+        return { error: "You are not logged in!" };
+    }
+
+    const blog = await db
+        .select()
+        .from(blogs)
+        .where(eq(blogs.slug, slug))
+        .limit(1);
+    if (!blog) {
+        return { error: "Blog is not found!" };
+    }
+    if (blog[0].author_uid !== session.user.uid) {
+        return { error: "Forbidden: You are not the owner of this post." };
+    }
     const title = formData.get("title") as string;
     const body = formData.get("body") as string;
     const summary = formData.get("summary") as string;
@@ -89,6 +118,18 @@ export const updateBlogPost = async (
 };
 
 export const deleteBlogPost = async (id: number) => {
+    const session = await auth();
+    if (!session?.user) {
+        return { error: "You are not logged in!" };
+    }
+
+    const blog = await db.select().from(blogs).where(eq(blogs.id, id)).limit(1);
+    if (!blog) {
+        return { error: "Blog is not found!" };
+    }
+    if (blog[0].author_uid !== session.user.uid) {
+        return { error: "Forbidden: You are not the owner of this post." };
+    }
     await db.delete(blogs).where(eq(blogs.id, id));
     redirect("/");
 };

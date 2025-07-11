@@ -6,13 +6,15 @@ import React from "react";
 import CommentEdit from "./CommentEdit";
 import Window from "./Window";
 import { deleteComment } from "@/actions/commentAction";
+import { Session } from "next-auth";
 
 interface CommentProps {
     comment: IComment;
     slug: string;
+    session: Session | null;
 }
 
-const Comment: React.FC<CommentProps> = ({ comment, slug }) => {
+const Comment: React.FC<CommentProps> = ({ comment, slug, session }) => {
     const [mode, setMode] = useState<string>("read"); // read, edit, delete
 
     return (
@@ -22,18 +24,19 @@ const Comment: React.FC<CommentProps> = ({ comment, slug }) => {
                     {comment.author || "Anonymous"} -{" "}
                     {comment.created_at?.toLocaleDateString()}
                 </p>
-                {mode === "read" && (
-                    <div className="flex gap-2">
-                        <i
-                            className="bi bi-pencil text-gray-500 hover:text-gray-900 transition-colors duration-300"
-                            onClick={() => setMode("edit")}
-                        />
-                        <i
-                            className="bi bi-trash text-gray-500 hover:text-red-600 transition-colors duration-300"
-                            onClick={() => setMode("delete")}
-                        />
-                    </div>
-                )}
+                {mode === "read" &&
+                    session?.user?.uid === comment.author_uid && (
+                        <div className="flex gap-2">
+                            <i
+                                className="bi bi-pencil text-gray-500 hover:text-gray-900 transition-colors duration-300"
+                                onClick={() => setMode("edit")}
+                            />
+                            <i
+                                className="bi bi-trash text-gray-500 hover:text-red-600 transition-colors duration-300"
+                                onClick={() => setMode("delete")}
+                            />
+                        </div>
+                    )}
             </div>
             {mode === "edit" ? (
                 <CommentEdit comment={comment} show={setMode} slug={slug} />

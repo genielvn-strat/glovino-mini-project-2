@@ -4,6 +4,7 @@ import { db } from "@/db/drizzle";
 import { revalidatePath } from "next/cache";
 import { blogs, comments } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { auth } from "@/auth";
 
 export const getComments = async (slug: string) => {
     const blog = await db
@@ -22,6 +23,11 @@ export const getComments = async (slug: string) => {
 };
 
 export const createComment = async (formData: FormData, slug: string) => {
+    const session = await auth();
+    if (!session?.user) {
+        return { error: "You are not logged in!" };
+    }
+
     const blog = await db
         .select()
         .from(blogs)
@@ -43,6 +49,7 @@ export const createComment = async (formData: FormData, slug: string) => {
     await db.insert(comments).values({
         body: body,
         author: author || "Guest",
+        author_uid: session?.user.uid,
         blog: blog[0].id,
     });
 
@@ -54,6 +61,23 @@ export const updateComment = async (
     id: number,
     slug: string
 ) => {
+    const session = await auth();
+    if (!session?.user) {
+        return { error: "You are not logged in!" };
+    }
+
+    const comment = await db
+        .select()
+        .from(comments)
+        .where(eq(comments.id, id))
+        .limit(1);
+    if (!comment) {
+        return { error: "Comment is not found!" };
+    }
+    if (comment[0].author_uid !== session.user.uid) {
+        return { error: "Forbidden: You are not the owner of this comment." };
+    }
+
     const body = formData.get("body") as string;
 
     if (!body) {
@@ -71,6 +95,22 @@ export const updateComment = async (
 };
 
 export const deleteComment = async (id: number, slug: string) => {
+    const session = await auth();
+    if (!session?.user) {
+        return { error: "You are not logged in!" };
+    }
+
+    const comment = await db
+        .select()
+        .from(comments)
+        .where(eq(comments.id, id))
+        .limit(1);
+    if (!comment) {
+        return { error: "Comment is not found!" };
+    }
+    if (comment[0].author_uid !== session.user.uid) {
+        return { error: "Forbidden: You are not the owner of this comment." };
+    }
     await db.delete(comments).where(eq(comments.id, id));
     revalidatePath(`/blogs/${slug}`);
 };

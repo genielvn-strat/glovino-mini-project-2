@@ -56,5 +56,5 @@
 }
 
 .blog-markdown {
-    @apply gap-1 flex flex-col;
+    @apply gap-4 flex flex-col;
 }

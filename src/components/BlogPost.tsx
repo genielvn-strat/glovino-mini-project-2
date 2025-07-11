@@ -6,14 +6,21 @@ import remarkGfm from "remark-gfm";
 import Window from "./Window";
 import { deleteBlogPost } from "@/actions/blogAction";
 import BlogPostEdit from "./BlogPostEdit";
+import { Session } from "next-auth";
 
 interface BlogPostProps {
     blog: IBlogPost;
     commentsNumber?: number;
     slug: string;
+    session: Session | null;
 }
 
-const BlogPost: React.FC<BlogPostProps> = ({ blog, commentsNumber, slug }) => {
+const BlogPost: React.FC<BlogPostProps> = ({
+    blog,
+    commentsNumber,
+    slug,
+    session,
+}) => {
     const [mode, setMode] = useState<string>("read");
 
     return (
@@ -29,22 +36,26 @@ const BlogPost: React.FC<BlogPostProps> = ({ blog, commentsNumber, slug }) => {
                     {commentsNumber}{" "}
                     {commentsNumber === 1 ? "comment" : "comments"}
                 </p>
-                <p
-                    className="text-gray-500 hover:text-gray-900 transition-colors duration-300"
-                    onClick={() => {
-                        setMode("edit");
-                    }}
-                >
-                    <i className="bi bi-pencil " /> {"Edit"}
-                </p>
-                <p
-                    className="text-gray-500 hover:text-red-600 transition-colors duration-300"
-                    onClick={() => {
-                        setMode("delete");
-                    }}
-                >
-                    <i className="bi bi-trash " /> {"Delete"}
-                </p>
+                {blog.author_uid === session?.user?.uid && (
+                    <>
+                        <p
+                            className="text-gray-500 hover:text-gray-900 transition-colors duration-300"
+                            onClick={() => {
+                                setMode("edit");
+                            }}
+                        >
+                            <i className="bi bi-pencil " /> {"Edit"}
+                        </p>
+                        <p
+                            className="text-gray-500 hover:text-red-600 transition-colors duration-300"
+                            onClick={() => {
+                                setMode("delete");
+                            }}
+                        >
+                            <i className="bi bi-trash " /> {"Delete"}
+                        </p>
+                    </>
+                )}
             </div>
             {mode === "edit" ? (
                 <>

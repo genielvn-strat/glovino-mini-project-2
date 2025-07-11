@@ -29,6 +29,13 @@
       "when": 1752111230906,
       "tag": "0003_early_vertigo",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1752204152234,
+      "tag": "0004_tricky_smasher",
+      "breakpoints": true
     }
   ]
 }

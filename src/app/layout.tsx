@@ -32,7 +32,7 @@ export default function RootLayout({
                         <NavBar />
                     </header>
 
-                    <main className="w-full max-w-[768px] px-4 flex-grow">
+                    <main className="w-full max-w-[768px] px-8 flex-grow">
                         {children}
                     </main>
                 </div>
