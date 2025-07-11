@@ -11,7 +11,7 @@ const BlogCard: React.FC<BlogPostCardProps> = ({ post }) => {
     const imageUrl = imageMatch?.[1];
 
     return (
-        <div className="m-4 rounded-2xl border border-gray-300 shadow-md hover:shadow-lg transition-shadow duration-300">
+        <div className="rounded-2xl border border-gray-300 shadow-md hover:shadow-lg transition-shadow duration-300">
             {imageUrl && (
                 <img
                     src={imageUrl}

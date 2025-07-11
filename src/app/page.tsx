@@ -4,12 +4,12 @@ import AddBlogPost from "@/components/AddBlogPost";
 import BlogPostCardList from "@/components/BlogPostCardList";
 
 export default async function Home() {
-    const blogs = (await getBlogs()).reverse();
+    const blogs = await getBlogs();
     const session = await auth();
-    
+
     return (
-        <div className="pb-32">
-            <AddBlogPost session={session}/>
+        <div className="flex flex-col gap-4 pt-4 pb-32">
+            <AddBlogPost session={session} />
             <BlogPostCardList blogPosts={blogs} />
         </div>
     );

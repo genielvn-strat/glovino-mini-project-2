@@ -1,14 +1,27 @@
 "use server";
 
 import { db } from "@/db/drizzle";
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { blogs } from "@/db/schema";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 
 export const getBlogs = async () => {
-    const data = await db.select().from(blogs);
+    const data = await db.select().from(blogs).orderBy(desc(blogs.updated_at));
+    return data;
+};
+
+export const getOwnedBlogs = async () => {
+    const session = await auth();
+    if (!session?.user) {
+        return [];
+    }
+    const data = await db
+        .select()
+        .from(blogs)
+        .orderBy(desc(blogs.updated_at))
+        .where(eq(blogs.author_uid, session.user.uid));
     return data;
 };
 
@@ -84,6 +97,7 @@ export const updateBlogPost = async (
         .from(blogs)
         .where(eq(blogs.slug, slug))
         .limit(1);
+
     if (!blog) {
         return { error: "Blog is not found!" };
     }

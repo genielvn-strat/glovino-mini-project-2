@@ -8,7 +8,7 @@ interface BlogPostCardListProps {
 
 const BlogPostCardList: React.FC<BlogPostCardListProps> = ({ blogPosts }) => {
     return (
-        <div>
+        <div className="flex flex-col gap-4">
             {blogPosts.map((post, idx) => (
                 <BlogCard post={post} key={idx} />
             ))}

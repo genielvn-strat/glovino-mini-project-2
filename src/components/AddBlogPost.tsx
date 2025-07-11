@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import AddBlogPostForm from "./AddBlogPostForm";
 import { Session } from "next-auth";
+import { redirect } from "next/navigation";
 
 interface AddBlogPostProps {
     session: Session | null;
@@ -12,9 +13,11 @@ const AddBlogPost: React.FC<AddBlogPostProps> = ({ session }) => {
     const [showForm, setShowForm] = useState<boolean>(false);
 
     return (
-        <div className="p-4 m-4 rounded-2xl border border-gray-300 shadow-md hover:shadow-lg transition-shadow duration-300">
+        <div className="p-4 rounded-2xl border border-gray-300 shadow-md hover:shadow-lg transition-shadow duration-300">
             {!session?.user ? (
-                <div className="text-xl cursor-pointer select-none" >
+                <div className="text-xl cursor-pointer select-none"  onClick={() => {
+                    redirect("/account")
+                }}>
                     <i className="bi bi-person-circle" />
                     <span className="ml-2">Sign in to get started!</span>
                 </div>

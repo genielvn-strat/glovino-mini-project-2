@@ -28,7 +28,7 @@ export default function RootLayout({
             </head>
             <body className={`${noto_sans.variable} antialiased`}>
                 <div className="flex flex-col min-h-screen bg-white text-gray-900 items-center">
-                    <header className="flex items-center justify-center w-full px-4 py-4 bg-pink-300">
+                    <header className="flex items-center justify-center w-full py-4 bg-pink-300">
                         <NavBar />
                     </header>
 
