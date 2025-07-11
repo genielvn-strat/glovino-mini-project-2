@@ -5,7 +5,6 @@ import CommentList from "@/components/CommentList";
 import { IBlogPost } from "@/types/IBlogPost";
 import { IComment } from "@/types/IComment";
 import { notFound } from "next/navigation";
-import { Metadata } from "next";
 import { auth } from "@/auth";
 
 interface BlogPostProps {
@@ -14,9 +13,7 @@ interface BlogPostProps {
     };
 }
 
-export async function generateMetadata({
-    params,
-}: BlogPostProps): Promise<Metadata> {
+export async function generateMetadata({ params }: BlogPostProps) {
     const blog = (await params).blog;
 
     const blogPost: IBlogPost = await getBlogPost(blog);
@@ -46,7 +43,7 @@ export default async function BlogPostPage({ params }: BlogPostProps) {
                 slug={blog}
                 session={session}
             />
-            <CommentList comments={comments} slug={blog} session={session}/>
+            <CommentList comments={comments} slug={blog} session={session} />
         </div>
     );
 }
