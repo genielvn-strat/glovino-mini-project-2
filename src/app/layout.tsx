@@ -9,8 +9,8 @@ const noto_sans = Noto_Sans_JP({
 });
 
 export const metadata: Metadata = {
-    title: "Home",
-    description: "A simple blog application",
+    title: "4blogger",
+    description: "Write fast. Anonymously.",
 };
 
 export default function RootLayout({
@@ -21,6 +21,10 @@ export default function RootLayout({
     return (
         <html lang="en">
             <head>
+                <link
+                    rel="stylesheet"
+                    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+                ></link>
                 <link
                     rel="stylesheet"
                     href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
